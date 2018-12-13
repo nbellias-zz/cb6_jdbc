@@ -5,30 +5,23 @@
  */
 package jdbc1;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 /**
  *
  * @author Νικόλαος Μπέλλιας
  */
-public class JDBC1 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        //Driver connection
+public class MySQLConnection {
+    
+    public static Connection connect() throws SQLException {
+        String urlSakila = "jdbc:mysql://192.168.227.129:3306/sakila";
+        String user = "nikolaos";
+        String password = "Sp#r0s1967!";
         
-        //Statement
-        
-        //Execute
-
-        //Result
+        return DriverManager.getConnection(urlSakila, user, password);
     }
 
+    
 }
