@@ -5,14 +5,12 @@
  */
 package jdbc1;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 
 /**
  *
@@ -32,30 +30,48 @@ public class JDBC1 {
 
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(urlSalesdb, user, password);
-            String sql = "select count(*) as cnt from Customers";
-
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs1 = pstmt.executeQuery();
-            while (rs1.next()) {
-                System.out.println(rs1.getInt("cnt"));
-            }
-
-            Statement stmt = conn.createStatement();
-            ResultSet rs2 = stmt.executeQuery(sql);
-            while (rs2.next()) {
-                System.out.println(rs2.getInt("cnt"));
+//            conn = DriverManager.getConnection(urlSalesdb, user, password);
+//            String sql = "select count(*) as cnt from Customers";
+//
+//            PreparedStatement pstmt = conn.prepareStatement(sql);
+//            ResultSet rs1 = pstmt.executeQuery();
+//            while (rs1.next()) {
+//                System.out.println(rs1.getInt("cnt"));
+//            }
+//            
+//            Statement stmt = conn.createStatement();
+//            ResultSet rs2 = stmt.executeQuery(sql);
+//            while (rs2.next()) {
+//                System.out.println(rs2.getInt("cnt"));
+//            }
+            
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Enter an actor's name:");
+            String actorNameLike = sc.nextLine();
+            
+            conn = DriverManager.getConnection(urlSakila, user, password);
+            String storedPrecedureCall = "{call find_films_of_actor(?)}";
+            CallableStatement cstmt = conn.prepareCall(storedPrecedureCall);
+            cstmt.setString(1, actorNameLike);
+            ResultSet rsStoredProc = cstmt.executeQuery();
+            while(rsStoredProc.next()){
+                //first_name, last_name, title, release_year
+                System.out.print(rsStoredProc.getString("first_name") + ", ");
+                System.out.print(rsStoredProc.getString("last_name") + ", ");
+                System.out.print(rsStoredProc.getString("title") + ", ");
+                System.out.println(rsStoredProc.getInt("release_year"));
             }
 
             //conn = DriverManager.getConnection(urlSakila, user, password);
-            sql = "select count(*) as cnt from Employees";
-            stmt = conn.createStatement();
-            rs2 = stmt.executeQuery(sql);
+//            sql = "select count(*) as cnt from Employees";
+//            stmt = conn.createStatement();
+//            rs2 = stmt.executeQuery(sql);
+//
+//            while (rs2.next()) {
+//                System.out.println(rs2.getInt("cnt"));
+//            }
 
-            while (rs2.next()) {
-                System.out.println(rs2.getInt("cnt"));
-            }
-
+            cstmt.close();
             conn.close();
         } catch (SQLException ex) {
 
